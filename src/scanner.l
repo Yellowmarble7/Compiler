@@ -24,7 +24,7 @@ int processString();
 
 %}
 
-newline         (\r?\n) //minimal definitions for flex(for now)
+newline         (\r?\n) /*minimal definitions for flex(for now)*/
 whitespace      [ \t]+
 integer         (0|[1-9][0-9]*)
 character       \'(\\([nt"\\\'])|[^\\'\n])\'
@@ -39,7 +39,7 @@ string       \"([^\"\n\\]|\\[nt"\\])*\"
 untermstring    \"([^\"\n\\]|\\[nt"\\])*
 
 comment         /\*([^*]|\*+[^*/])*\*/
-multlncomment   //TODO
+multlncomment   /\*([^*]|\*+[^*/])*\*/
 untermcomment   /\*([^*]|\*+[^*/])*$
 
 identifier      [A-Za-z][A-Za-z0-9]*
