@@ -10,6 +10,7 @@
 int scancol = 1;
 int yycol = 1;
 int scanlineno = 1;
+int yylineno = 1;
 
  /* char pointer to pass error messages to driver.c */
 char *yyerror;
@@ -23,28 +24,28 @@ int processString();
 
 %}
 
-newline         //TODO
-whitespace      //TODO
-integer         //TODO
-character       //TODO
+newline         (\r?\n) //minimal definitions for flex(for now)
+whitespace      [ \t]+
+integer         (0|[1-9][0-9]*)
+character       \'(\\([nt"\\\'])|[^\\'\n])\'
 
  /* String can contain any characters between the double quotes */
  /* other than a newline or unescaped doublequotes */
-*/
-string       //TODO
+
+string       \"([^\"\n\\]|\\[nt"\\])*\"
 
 
  /* If the end quote is not found in the same line the string is unterminated */
-untermstring //TODO
+untermstring    \"([^\"\n\\]|\\[nt"\\])*
 
-comment         //TODO
+comment         /\*([^*]|\*+[^*/])*\*/
 multlncomment   //TODO
-untermcomment   //TODO
+untermcomment   /\*([^*]|\*+[^*/])*$
 
-identifier      //TODO
-illidentifier   //TODO: regular expression for an illegal identifier
+identifier      [A-Za-z][A-Za-z0-9]*
+illidentifier   [0-9][A-Za-z0-9]*
 
-yylineno = 1;
+
 
 %%
 
