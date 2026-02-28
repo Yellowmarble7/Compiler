@@ -54,13 +54,57 @@ illidentifier   [0-9][A-Za-z0-9]*
 
  /* Keywords */
  /* TODO: Support all keywords in mC */
+ "if" {updateCol();
+ return KWD_IF;}
+
+ "else" {
+    updateCol();
+    return KWD_ELSE;
+ }
+
+ "while" {
+    updateCol();
+    return KWD_WHILE;
+ }
+
+ "int" {
+    updateCol();
+    return KWD_INT;
+ }
+
+ "string" {
+    updateCol();
+    return KWD_STRING;
+ }
+
+ "char" {
+    updateCol();
+    return KWD_CHAR;
+ }
+
+"return" {
+    updateCol();
+    return KWD_RETURN;
+}
+
+"void"{
+    updateCol();
+    return KWD_VOID;
+}
 
  /* Operators */
  /* TODO: Support all operators in mC */
 
  /* Identifiers */;
-{identifier}    //TODO
-{illidentifier} //TODO
+{identifier}    {
+    updateCol();
+    return ID;
+}
+
+{illidentifier} {
+    updateCol();
+    return ILLEGAL_TOK;
+}
 
  /* Constants */;
 {integer}       //TODO
