@@ -1,6 +1,15 @@
 #ifndef _TOKENDEF_H_
 #define _TOKENDEF_H_
 
+/* PLACEHOLDERS FOR NOW CHANGE LATER */
+#define INTEGER      4     // placeholder for integers (Person A)
+#define INTEGERLEAD0 5     // placeholder for leading-zero integers (Person A)
+#define CHARACTER    6     // placeholder for character constants (Person A)
+#define IDENTIFIER   7     // placeholder for identifiers (Person A)
+#define ILLIDENT     8     // placeholder for illegal identifiers (Person A)
+#define KEYWORD      9     // placeholder for keywords (optional)
+#define OPERATOR     10    // placeholder for operators (optional)
+
 /* major stuff */
 #define ID          251
 #define INTCONST    252
