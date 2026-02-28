@@ -4,7 +4,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#string <string.h>
+#include <string.h>
 #include "tokendef.h"
 
  /* integers to track line and column numbers */
@@ -28,6 +28,7 @@ int processString();
 newline         (\r?\n) /*minimal definitions for flex(for now)*/
 whitespace      [ \t]+
 integer         (0|[1-9][0-9]*)
+integerlead0    0[0-9]+
 character       \'(\\([nt"\\\'])|[^\\'\n])\'
 
  /* String can contain any characters between the double quotes */
@@ -99,7 +100,7 @@ illidentifier   [0-9][A-Za-z0-9]*
     return OPER_INC; }
 "--" {
     updateCol();
-    return OPER_INC; }
+    return OPER_DEC; }
 "&&"{
     updateCol();
     return OPER_AND; }
@@ -175,7 +176,9 @@ illidentifier   [0-9][A-Za-z0-9]*
 
  /* Identifiers */;
 {identifier}    {
+    int start = yycol;
     updateCol();
+    yycol = start;
     return ID;
 }
 
@@ -191,8 +194,10 @@ illidentifier   [0-9][A-Za-z0-9]*
 }
 
 {integerlead0}  {
-    updateCol();
+    int start == yycol;
     yyerror = "Illegal token";
+    yycol = start;
+    updateCol();
     return ILLEGAL_TOK;
 }
 
@@ -201,17 +206,27 @@ illidentifier   [0-9][A-Za-z0-9]*
     return CHARCONST;
 }
 
-{string}        {updateCol(); return processString();}
+{string}        {
+    int start = yycol;
+    int ret = processString();
+    yycol = start;
+    return ret;
+}
+
 {untermstring}  {updateCol(); yyerror = "Unterminated string"; return ERROR;}
 
  /* Comments */
 {comment}       {
     int i;
+    int start = yycol;
     for (i = 0; i < yyleng; i++){
-        if (yytext[i] == '\n')
-        countLines();
-        updateCol();
+        if (yytext[i] == '\n'){
+            countLines();
+        } else {
+            yycol++;
+        }
     }
+    scancol = yycol;
 }
 {untermcomment} {
     yyerror = "Unterminated comment";
@@ -221,15 +236,15 @@ illidentifier   [0-9][A-Za-z0-9]*
 {multlncomment} {
     int i;
     for (i = 0; i < yyleng; i++){
-        if (yytext[i]) == '\n')
+        if (yytext[i] == '\n')
             countLines();
-            updateCol();
-    }
+    } updateCol();
 }
 
  /* Other */
 {newline}       {
     countLines();
+    scancol = yycol;
 }
 
 {whitespace}    {
@@ -240,7 +255,7 @@ illidentifier   [0-9][A-Za-z0-9]*
 
 /* user routines */
 
-/* TODO:
+/* 
 Implement this function to keep track of column numbers
 */
 void updateCol(){
@@ -248,7 +263,7 @@ void updateCol(){
     scancol = yycol; /*keeping track of column numbers */
 }
 
-/* TODO:
+/*
 Implement this function to keep track of line numbers
 */
 void countLines(){
@@ -257,7 +272,7 @@ void countLines(){
 }
 
 
-/* TODO:
+/* 
 Implement this function to
 check for illegal escape sequences in string literals
 and
@@ -267,55 +282,53 @@ convert valid escape sequences into escaped characters
 int processString(){
     int len = yyleng;
     if (len < 2) {
-        yyerror = "Unterminated string";
+        yyerror = "Unterminated string constant";
         return ERROR;
     }
-        char *in = yytext +1;
-        int in_len =len -2;
-        char *out = (char *)malloc(in_len +2);
 
-        if (!out) {
-            yyerror = "In error";
-            return ERROR;
-        }
+    char *in = yytext + 1;   
+    int in_len = len - 2;   
 
-        int i=0;
-        int j=0;
+    char *out = (char *)malloc(in_len + 1 + 1);
+    if (!out) { 
+        yyerror = "Internal error"; 
+        return ERROR; }
 
-        while(i < in_len){
-            if (in[i] == '\\'){
-                if (i+1 >= in_len){
-                    free(out);
-                    yyerror = "Unterminated string";
-                    return ERROR;
-                                }
-                char esc = in[i+1];
-                if(esc == 'n'){
-                    out[j++] = '\n';
-                } else if (esc == 't'){
-                    out[j++] = '\t';
-                } else if (esc == '"') {
-                    out[j++] = '"';
-                } else if (esc == '\\'){
-                    out[j++] = '\\';
-                } else {
-                    free(out);
-                    yyerror = "Unrecognized escape char in string";
-                    return ERROR;
-                }
-                i +=2;
-            } else {
-                out[j++] = in[i++];
+    int i = 0, 
+    int j = 0;
+    while (i < in_len) {
+        if (in[i] == '\\') {
+            if (i + 1 >= in_len) {
+                free(out);
+                yyerror = "Unterminated string constant";
+                return ERROR;
             }
-        }
-out [j]= '\0';
-char *newstr = strdup(out);
-free(out);
-yytext = newstr;
- yycol += yyleng;
- scancol = yycol;
 
- return STRCONST;
-    
+            char esc = in[i+1];
+            if (esc == 'n') {
+                out[j++] = '\n';
+            } else if (esc == 't') {
+                out[j++] = '\t';
+            } else if (esc == '"') {
+                out[j++] = '"';
+            } else if (esc == '\\') {
+                out[j++] = '\\';
+            } else {
+                free(out);
+                yyerror = "Unrecognized escape character in String";
+                return ERROR;
+            }
+            i += 2;
+        } else {
+            out[j++] = in[i++];
+        }
+    }
+    out[j] = '\0';
+
+    char *newstr = strdup(out);
+    free(out);
+    yytext = newstr;
+    updateCol();
+    return STRCONST;
 }
 
