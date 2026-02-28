@@ -86,12 +86,16 @@ illidentifier   [0-9][A-Za-z0-9]*
 Implement this function to keep track of column numbers
 */
 void updateCol(){
+    yycol += yyleng;
+    scancol = yycol; /*keeping track of column numbers */
 }
 
 /* TODO:
 Implement this function to keep track of line numbers
 */
 void countLines(){
+    yylineno += 1;
+    yycol = 1; /* reset to newline each time and keep track */
 }
 
 
