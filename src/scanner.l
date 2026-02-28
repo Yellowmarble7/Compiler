@@ -107,9 +107,22 @@ illidentifier   [0-9][A-Za-z0-9]*
 }
 
  /* Constants */;
-{integer}       //TODO
-{integerlead0}  //TODO: "Integers may not have leading zeros"
-{character}     //TODO
+{integer}       {
+    updateCol();
+    return INTCONST;
+}
+
+{integerlead0}  {
+    updateCol();
+    yyerror = "Illegal token";
+    return ILLEGAL_TOK;
+}
+
+{character}     {
+    updateCol();
+    return CHARCONST;
+}
+
 {string}        {updateCol(); return processString();}
 {untermstring}  {updateCol(); yyerror = "Unterminated string"; return ERROR;}
 
