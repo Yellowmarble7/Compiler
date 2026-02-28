@@ -127,14 +127,36 @@ illidentifier   [0-9][A-Za-z0-9]*
 {untermstring}  {updateCol(); yyerror = "Unterminated string"; return ERROR;}
 
  /* Comments */
-{comment}       //TODO
-{untermcomment} //TODO
-{multlncomment} //TODO
+{comment}       {
+    int i;
+    for (i = 0; i < yyleng; i++){
+        if (yytext[i] == '\n')
+        countLines();
+        updateCol();
+    }
+}
+{untermcomment} {
+    yyerror = "Unterminated comment";
+    return ERROR;
+}
+
+{multlncomment} {
+    int i;
+    for (i = 0; i < yyleng; i++){
+        if (yytext[i]) == '\n')
+            countLines();
+            updateCol();
+    }
+}
 
  /* Other */
-{newline}       //TODO
-{whitespace}    //TODO
-.               {return ILLEGAL_TOK;}
+{newline}       {
+    countLines();
+}
+
+{whitespace}    {
+    updateCol(); /*ignore whitespace */
+}
 
 %%
 
