@@ -93,7 +93,85 @@ illidentifier   [0-9][A-Za-z0-9]*
 }
 
  /* Operators */
- /* TODO: Support all operators in mC */
+ /* Support all operators in mC */
+"++"{
+    updateCol();
+    return OPER_INC; }
+"--" {
+    updateCol();
+    return OPER_INC; }
+"&&"{
+    updateCol();
+    return OPER_AND; }
+"||"{ 
+    updateCol(); 
+    return OPER_OR; }
+"<="{ 
+    updateCol(); 
+    return OPER_LTE; }
+">="{ 
+    updateCol(); 
+    return OPER_GTE; }
+"=="{ 
+    updateCol(); 
+    return OPER_EQ; }
+"!="{ 
+    updateCol(); 
+    return OPER_NEQ; }
+"="{ 
+    updateCol(); 
+    return OPER_ASGN; }
+"+"{ 
+    updateCol(); 
+    return OPER_ADD; }
+"-"{ 
+    updateCol(); 
+    return OPER_SUB; }
+"*"{ 
+    updateCol(); 
+    return OPER_MUL; }
+"/"{ 
+    updateCol(); 
+    return OPER_DIV; }
+"%"{ 
+    updateCol(); 
+    return OPER_MOD; }
+"<"{ 
+    updateCol(); 
+    return OPER_LT; }
+">"{ 
+    updateCol(); 
+    return OPER_GT; }
+"@"{ 
+    updateCol(); 
+    return OPER_AT; }
+"["{ 
+    updateCol(); 
+    return LSQ_BRKT; }
+"]"{ 
+    updateCol(); 
+    return RSQ_BRKT; }
+"{"{ 
+    updateCol(); 
+    return LCRLY_BRKT; }
+"}"{ 
+    updateCol(); 
+    return RCRLY_BRKT; }
+"("{ 
+    updateCol(); 
+    return LPAREN; }
+")"{ 
+    updateCol(); 
+    return RPAREN; }
+","{ 
+    updateCol(); 
+    return COMMA; }
+";"{ 
+    updateCol(); 
+    return SEMICLN; }
+"!"{ 
+    updateCol(); 
+    return OPER_NOT; }
 
  /* Identifiers */;
 {identifier}    {
