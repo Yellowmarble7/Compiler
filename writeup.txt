@@ -6,7 +6,7 @@ CS 4318
 2. Group Contributions
 Magdalena Mata - Implemented the remaining scanner rules (identifiers, numbers, characters, strings, comments), handled line and column tracking, and performed debugging to ensure correct token recognition.
 
-Julie Torres - Contributed the initial implementation of rules (keywords, operations, characters, numbers, comments) in scanner.l.
+Julie Torres - Contributed the initial implementation of rules (keywords, operations, characters, numbers, comments) in scanner.l and creation of github repository and folder structure.
 
 3. Test Examples
 Example 1:
