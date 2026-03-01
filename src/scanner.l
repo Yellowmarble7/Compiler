@@ -14,11 +14,11 @@ int yycol = 1;
  /* char pointer to pass error messages to driver.c */
 char *yyerror;
 
- /* TODO: functions to update line and column numbers */
+ /* declaration of functions to update line and column numbers */
 void updateCol();
 void countLines();
 
- /* TODO: function to process a string literal */
+ /* declaration of function to process a string literal */
 int processString();
 
 %}
@@ -26,10 +26,11 @@ int processString();
 /* MAGDALENA Handle newlines */
 newline        \n 
 whitespace     [ \t]+
-/* PLACEHOLDER change below the integerlead0 integer and character*/ 
+
+
 integerlead0    0[0-9]+
-integer         [0-9]+
-character       '.'
+integer         0|[1-9][0-9]*
+character       \'[^'\n]\'
 
  /* String can contain any characters between the double quotes */
  /* other than a newline or unescaped doublequotes */
@@ -43,13 +44,15 @@ string          \"([^\\\n]|\\[nt\"\\])*\"
  /* If the end quote is not found in the same line the string is unterminated */
 untermstring    \"([^\\\n]|\\[nt\"\\])*
 
-comment         \/\\*([^*]|\*+[^*/])*\*+\/
-untermcomment   \/\\*([^*]|\*+[^*/])*
+comment         \/\*([^*]|\*+[^*/])*\*+\/
+ /* multlncomment  */
+untermcomment   \/\*([^*]|\*+[^*/])*
 
-/* PLACEHOLDER change below the identifier and illidentifier */
-/* PLACEHOLDER ILLIDENTIFIER TODO: regular expression for an illegal identifier */
 
-identifier      [a-zA-Z_][a-zA-Z0-9_]*
+/* ILLIDENTIFIER TODO: regular expression for an illegal identifier */
+
+identifier      [a-zA-Z][a-zA-Z0-9]*
+illidentifier   [0-9][A-Za-z0-9]*
 
 
 
@@ -59,27 +62,71 @@ identifier      [a-zA-Z_][a-zA-Z0-9_]*
 
  /* Keywords */
  /* TODO: Support all keywords in mC */
+"if"      { updateCol(); return KWD_IF; }
+"else"    { updateCol(); return KWD_ELSE; }
+"while"   { updateCol(); return KWD_WHILE; }
+"int"     { updateCol(); return KWD_INT; }
+"string"  { updateCol(); return KWD_STRING; }
+"char"    { updateCol(); return KWD_CHAR; }
+"return"  { updateCol(); return KWD_RETURN; }
+"void"    { updateCol(); return KWD_VOID; }
+ 
 
  /* Operators */
  /* TODO: Support all operators in mC */
 
- /* PLACEHOLDERS CHANGE IDENTIFIER AND ILLIDENTIFIER Identifiers */
+ /* multi-characters operators */
+"++"    { updateCol(); return OPER_INC; }
+"--"    { updateCol(); return OPER_DEC; }
+"&&"    { updateCol(); return OPER_AND; }
+"||"    { updateCol(); return OPER_OR; }
+"<="    { updateCol(); return OPER_LTE; }
+">="    { updateCol(); return OPER_GTE; }
+"=="    { updateCol(); return OPER_EQ; }
+"!="    { updateCol(); return OPER_NEQ; }
+
+ /* single-character operators */
+"="     { updateCol(); return OPER_ASGN; }
+"+"     { updateCol(); return OPER_ADD; }
+"-"     { updateCol(); return OPER_SUB; }
+"*"     { updateCol(); return OPER_MUL; }
+"/"     { updateCol(); return OPER_DIV; }
+"%"     { updateCol(); return OPER_MOD; }
+"<"     { updateCol(); return OPER_LT; }
+">"     { updateCol(); return OPER_GT; }
+"!"     { updateCol(); return OPER_NOT; }
+"@"     { updateCol(); return AT; }
+
+ /* Other punctuation */
+"\["    { updateCol(); return LSQ_BRKT; }
+"\]"    { updateCol(); return RSQ_BRKT; }
+"\{"    { updateCol(); return LCRLY_BRKT; }
+"\}"    { updateCol(); return RCRLY_BRKT; }
+"\("    { updateCol(); return LPAREN; }
+"\)"    { updateCol(); return RPAREN; }
+","     { updateCol(); return COMMA; }
+";"     { updateCol(); return SEMICLN; }
+
+ /* Constants */
+{integerlead0}  { updateCol(); yyerror = "Integer cannot start with 0"; return ILLEGAL_TOK; }
+{integer}       { updateCol(); return INTCONST; }
+{character}     { updateCol(); return CHARCONST; }
+
+ /* MAGDALENA Comments */
+{comment}       { updateCol(); }
+{untermcomment} { yyerror = "Unterminated comment"; return ERROR;} 
+
+ /* identifiers */
 {identifier}    { updateCol(); return IDENTIFIER; }
-
-
- /* PLACEHOLDERS CHANGE INTEGER INTEGERLEAD AND CHARACTER Constants */
-{character}     { updateCol(); return CHARACTER; }
-{integerlead0}  { updateCol(); return INTEGERLEAD0; } 
-{integer}       { updateCol(); return INTEGER; } 
+{illidentifier} { updateCol(); yyerror = "Illegal Identifier"; return ILLEGAL_TOK; }
 
 
  /* MAGDALENA string rules */
 {string}        {updateCol(); return processString();}
 {untermstring}  {updateCol(); yyerror = "Unterminated string"; return ERROR;}
 
- /* MAGDALENA Comments */
-{comment}       { updateCol(); }
-{untermcomment} { yyerror = "Unterminated comment"; return ERROR;}
+
+
 
  /* MAGDALENA Other */
 {newline}       { countLines(); }
@@ -155,7 +202,7 @@ int processString(){
     }
 
     result[j] = '\0'; //null
-    yytext = result; //replace yytext
+    // yytext = result; 
     return STRCONST;
 }
 
