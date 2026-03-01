@@ -39,7 +39,7 @@ character       \'[^'\n]\'
 
  /* String can contain any characters between the double quotes */
  /* other than a newline or unescaped doublequotes */
- /* MAGDALENA TODO string can contain any character except backlash or newline,
+ /* MAGDALENA string can contain any character except backlash or newline,
   accepts valid escape sequences, allows zero or more of these characters inside */
 
 
@@ -54,7 +54,7 @@ comment         /\*([^*]|\*+[^*/])*\*/
 
 untermcomment   /\*([^*]|\*+[^*/])* 
 
-/* ILLIDENTIFIER TODO: regular expression for an illegal identifier */
+/* ILLIDENTIFIER: regular expression for an illegal identifier */
 
 identifier      [a-zA-Z][a-zA-Z0-9]*
 illidentifier   [0-9][A-Za-z0-9]*
@@ -68,7 +68,7 @@ illidentifier   [0-9][A-Za-z0-9]*
 
 
  /* Keywords */
- /* TODO: Support all keywords in mC */
+ /* Support all keywords in mC */
 "if"      { startCol = yycol; updateCol(); return KWD_IF; }
 "else"    { startCol = yycol; updateCol(); return KWD_ELSE; }
 "while"   { startCol = yycol; updateCol(); return KWD_WHILE; }
@@ -81,7 +81,7 @@ illidentifier   [0-9][A-Za-z0-9]*
 
 
  /* Operators */
- /* TODO: Support all operators in mC */
+ /* Support all operators in mC */
 
  /* multi-characters operators */
 "++"    { startCol = yycol; updateCol(); return OPER_INC; }
@@ -150,24 +150,20 @@ illidentifier   [0-9][A-Za-z0-9]*
 /* user routines */
 
 /* MAGDALENA
-TODO:
-Implement this function to keep track of column numbers
+Implemented this function to keep track of column numbers
 */
 void updateCol() { yycol += yyleng; }
 
 /* MAGDALENA 
-TODO:
-Implement this function to keep track of line numbers
+Implemented this function to keep track of line numbers
 Basically moves to the next line and resets the column to the start of the line
 */
 void countLines() { yylineno++; yycol = 1; }
 
 
-/* MAGDALENA TODO:
-Implement this function to
-check for illegal escape sequences in string literals
-and
-convert valid escape sequences into escaped characters
+/* MAGDALENA:
+Implemented this function to check for illegal escape sequences in string literals
+and convert valid escape sequences into escaped characters
 (string[0] == '\\' and string[1] == 'n', then string[0] should be '\n')
 */
 int processString(){
