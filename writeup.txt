@@ -1,0 +1,24 @@
+1. Name and Course ID
+Magdalena Mata (Net ID: wdd24)
+Julie Torres (Net ID: jgt58)
+CS 3318 
+
+2. Group Contributions
+Magdalena Mata - Implemented the remaining scanner rules (identifiers, numbers, characters, strings, comments), handled line and column tracking, and performed debugging to ensure correct token recognition.
+
+Julie Torres - Contributed the initial implementation of rules for keywords and operators in scanner.l.
+
+3. Test Examples
+Example 1:
+Input: int x = 42;
+Expected Output: Tokens recognized: KWD_INT, ID(x), OPER_ASGN, INTCONST(42), SEMICLN
+
+Example 2:
+Input: char c = '\n';
+Expected Output: Tokens recognized: KWD_CHAR, ID(c), OPER_ASGN, CHARCONST('\n'), SEMICLN
+
+4. Extra Grading Instructions
+I am not using a makefile. To compile and run, use:
+flex scanner.l
+gcc lex.yy.c driver.c -o scanner
+./scanner < inputfile
