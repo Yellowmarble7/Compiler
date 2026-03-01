@@ -54,4 +54,19 @@
 #define ERROR       289
 #define ILLEGAL_TOK 290
 
+/* all of this for flex purposes */
+/* union to store token values */
+typedef union {
+    int intVal;
+    char charVal;
+    char *strVal;
+} YYSTYPE;
+
+/* yylval is used to pass token values from lexer to driver */
+extern YYSTYPE yylval;
+
+/* start column of token for printing in driver.c */
+extern int startCol;
+
+
 #endif //ifndef _TOKENDEF_H_
