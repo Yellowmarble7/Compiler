@@ -1,12 +1,12 @@
 1. Name and Course ID
 Magdalena Mata (Net ID: wdd24)
 Julie Torres (Net ID: jgt58)
-CS 3318 
+CS 4318 
 
 2. Group Contributions
 Magdalena Mata - Implemented the remaining scanner rules (identifiers, numbers, characters, strings, comments), handled line and column tracking, and performed debugging to ensure correct token recognition.
 
-Julie Torres - Contributed the initial implementation of rules for keywords and operators in scanner.l.
+Julie Torres - Contributed the initial implementation of rules (keywords, operations, characters, numbers, comments) in scanner.l.
 
 3. Test Examples
 Example 1:
@@ -22,3 +22,29 @@ I am not using a makefile. To compile and run, use:
 flex scanner.l
 gcc lex.yy.c driver.c -o scanner
 ./scanner < inputfile
+
+Had issues with Flex complaining about the comment and unterminated comment regexes, went for correctness.
+
+
+5. File Descriptions
+
+5.1 scanner.l
+- Implements the Flex scanner for the mC language
+- Recognizes identifiers, integers, characters, strings, keywords, operators, punctuation, and comments
+- Tracks line and column numbers for each token
+- Processes string escape sequences (\n, \t, \", \\) and reports errors for illegal sequences
+- Handles unterminated strings and comments with proper error messages
+- Calls processString() to convert string literals into their proper escaped form and store in yylval.strVal
+- Skips whitespace and newlines properly
+
+5.2 tokendef.h
+- Defines all token constants for identifiers, literals, keywords, operators, punctuation, and errors
+- Defines the YYSTYPE union for passing token values (integers, characters, strings) from the lexer to driver.c
+- Declares global variables like yylval and startCol used by the scanner and driver
+
+5.3 driver.c
+- Reads an input file (or stdin) and calls yylex() to get tokens
+- Prints each recognized token along with its line and column number in the format <TOKEN_TYPE, value> : (line:col)
+- Handles errors and illegal tokens by printing <ERROR, message> : (line:col)
+- Loops through the entire input until the end-of-file is reached
+
