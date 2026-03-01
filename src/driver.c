@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "tokendef.h"
 
+YYSTYPE yylval;
+
 extern int yylex(void);
 
 extern char *yytext;
@@ -9,6 +11,8 @@ extern char *yyerror;
 
 extern int yylineno;
 extern int yycol;
+
+extern int startCol; // column at start of current tocken
 
 void printToken(const int tokenNum) {
   switch(tokenNum) {
